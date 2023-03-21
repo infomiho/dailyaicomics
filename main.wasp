@@ -1,0 +1,83 @@
+app dailyaicomic {
+  wasp: {
+    version: "^0.9.0"
+  },
+  title: "dailyaicomic",
+  db: {
+    system: PostgreSQL
+  },
+  client: {
+    rootComponent: import { App } from "@client/App.tsx"
+  },
+  dependencies: [
+    ("chatgpt", "5.1.1"),
+    ("@chakra-ui/react", "1.8.8"),
+    ("react-icons", "4.8.0"),
+    ("@emotion/react", "11.10.6"),
+    ("@emotion/styled", "11.10.6"),
+    ("react-hook-form", "7.43.1"),
+    ("@fontsource/libre-baskerville", "4.5.10"),
+    ("@fontsource/source-sans-pro", "4.5.11"),
+    ("axios", "^0.27.2"),
+    ("@aws-sdk/client-s3", "3.295.0")
+  ],
+}
+
+route RootRoute { path: "/", to: MainPage }
+page MainPage {
+  component: import Main from "@client/pages/MainPage.tsx"
+}
+
+query getComics {
+  fn: import { getComics } from "@server/queries/comics.js",
+  entities: [Comic]
+}
+
+entity ComicJob {=psl
+  id String @id @default(uuid())
+  status String
+  createdAt DateTime @default(now())
+  comics Comic[]
+psl=}
+
+entity Comic {=psl
+  id String @id @default(uuid())
+  prompt String
+  imagePrefix String
+  images ComicImage[]
+  comicJobId String
+  comicJob ComicJob @relation(fields: [comicJobId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+psl=}
+
+entity ComicImage {=psl
+  id String @id @default(uuid())
+  comicId String
+  comic Comic @relation(fields: [comicId], references: [id])
+  image String
+  imageIndex Int
+  text String
+  imagePrompt String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+psl=}
+
+job kickoffGeneration {
+  executor: PgBoss,
+  schedule: {
+    cron: "* * * * *",
+  },
+  perform: {
+    fn: import { dailyRun } from "@server/jobs/dailyRun.js"
+  },
+  entities: [ComicJob, Comic, ComicImage]
+}
+
+job generateComic {
+  executor: PgBoss,
+  perform: {
+    fn: import { generateComicFn } from "@server/jobs/generateComic.js"
+  },
+  entities: [ComicJob, Comic, ComicImage]
+}
