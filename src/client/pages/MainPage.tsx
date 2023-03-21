@@ -7,17 +7,16 @@ import getComics from "@wasp/queries/getComics";
 import { Comic as ComicEntity, ComicImage } from "@wasp/entities";
 
 const MainPage = () => {
-  const { data: comics, isLoading } = useQuery<
-    {},
-    (ComicEntity & { images: ComicImage[] })[]
-  >(getComics);
+  const comicsInfo = useQuery<{}, (ComicEntity & { images: ComicImage[] })[]>(
+    getComics
+  );
 
   return (
     <Container maxW="container.xl" py={4}>
-      {isLoading && <Spinner />}
-      {comics && (
+      {comicsInfo.isInitialLoading && <Spinner />}
+      {comicsInfo.data && (
         <VStack gap={2} py={4}>
-          {comics.map((comic) => (
+          {comicsInfo.data.map((comic) => (
             <Comic key={comic.id} comic={comic} />
           ))}
         </VStack>
