@@ -30,17 +30,14 @@ Respond with ONLY the JSON that describes the comic: [{ sceneDescription: "", te
   console.log("What we'll be drawing");
   console.table(comicJSON);
 
-  const imagePromptPrefix =
-    "ink, black and yellow ink, cartoon style, simple scene, 3 elements in the scene, mostly white background, ";
-  // const imagePromptPrefix =
-  //   "colored ink, cartoon style, simple scene, mostly white background, ";
+  const imageStyle = getRandomImageStyle();
 
   // For each part of the comic, get the image
   const images: { sceneDescription: string; text: string; image: string }[] =
     await Promise.all(
       comicJSON!.map(async (part: any) => {
         const image = await waitForPredicationImage(
-          imagePromptPrefix + part.sceneDescription,
+          `${part.sceneDescription}, ${imageStyle}`,
           (update) => {
             console.log("Image update", update);
           }
@@ -59,8 +56,24 @@ Respond with ONLY the JSON that describes the comic: [{ sceneDescription: "", te
 
   return {
     images,
-    imagePromptPrefix,
+    imagePromptPrefix: imageStyle,
     comicPrompt,
     topic,
   };
+}
+
+function getRandomImageStyle(): string {
+  const styles = [
+    "in style of quentin blake, single panel, no text",
+    "in style of Craig Mccracken, single panel, no text",
+    "in style of Art Spiegelman, single panel, no text",
+    "in style of Marjane Satrapi, single panel, no text",
+    `in style of Bryan Lee O'Malley, single panel, no text`,
+    "in style of Pendleton Ward, single panel, no text",
+    "in style of Don Hertzfeldt, single panel, no text",
+    "in style of watterson (calvin & hobbs, single panel, no text",
+    "ink, black and yellow ink, cartoon style, simple scene, 3 elements in the scene, mostly white background",
+  ];
+
+  return styles[Math.floor(Math.random() * styles.length)];
 }

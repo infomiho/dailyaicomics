@@ -1,31 +1,41 @@
-import { Box, Button, VStack } from "@chakra-ui/react";
-import { AiOutlineArrowUp } from "react-icons/ai";
+import { Box, Button, VStack, Tooltip } from "@chakra-ui/react";
+import { AiTwotoneHeart } from "react-icons/ai";
 
 export function ComicButtons({
   onVote,
   votes,
   disabled,
   isSelected,
+  label,
 }: {
   onVote?: () => void;
   votes: number;
   disabled?: boolean;
   isSelected?: boolean;
+  label?: string;
 }) {
+  const voteButton = (
+    <Button
+      onClick={onVote}
+      colorScheme="brand"
+      disabled={disabled}
+      variant={isSelected ? "solid" : "outline"}
+    >
+      <AiTwotoneHeart />
+    </Button>
+  );
   return (
     <VStack>
-      <Button
-        onClick={onVote}
-        colorScheme="brand"
-        disabled={disabled}
-        variant={isSelected ? "solid" : "outline"}
+      <Tooltip
+        bg="white"
+        color="gray.700"
+        hasArrow
+        label={label}
+        placement="top"
       >
-        <AiOutlineArrowUp />
-      </Button>
+        <Box>{voteButton}</Box>
+      </Tooltip>
       <Box fontWeight={700}>{votes}</Box>
-      {/* <Button colorScheme="brand" disabled={disabled}>
-        <AiOutlineArrowDown />
-      </Button> */}
     </VStack>
   );
 }

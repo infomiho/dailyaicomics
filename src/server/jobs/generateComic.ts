@@ -1,4 +1,4 @@
-import { getComic } from "../external/index.js";
+import { getComic } from "../comics/index.js";
 
 export async function generateComicFn(
   args: unknown,
@@ -32,7 +32,7 @@ export async function generateComicFn(
   });
 
   // If there are already 3 comics for today, do nothing
-  if (comics.length >= 3) {
+  if (comics.length >= 5) {
     console.log("[generateComic] Already 3 comics for today");
     return;
   }

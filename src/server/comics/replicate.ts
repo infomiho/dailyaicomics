@@ -8,6 +8,8 @@ const realisticVisionmodel =
   "569b205389f2ad9868c9821d96e71b88c0120652f899adff7ac81b4fc7c59130";
 const hergeStyleModel =
   "3092b9f17c96c7a73952fc9170273b0362d53de1c0f27fcbd54773542e6c0e62";
+const stableDiffusionModel2 =
+  "db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf";
 
 type Prediction = {
   id: string;
@@ -24,8 +26,10 @@ function getPredication(prompt: string): Promise<any> {
     {
       input: {
         prompt,
+        image_dimensions: "512x512",
+        num_inference_steps: 75,
       },
-      version: realisticVisionmodel,
+      version: stableDiffusionModel2,
     },
     {
       headers: {

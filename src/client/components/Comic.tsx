@@ -25,6 +25,13 @@ export function Comic({
         votes={comic._count.votes}
         isSelected={comic.id === votedForId}
         disabled={!user || votedForId !== null}
+        label={
+          !user
+            ? "You must be logged in to vote"
+            : votedForId
+            ? "You only vote once per day"
+            : ""
+        }
       />
       <HStack
         p={3}
