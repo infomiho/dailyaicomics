@@ -2,9 +2,9 @@
 
 Hey 👋 Thanks for checking out Daily AI Comics source. This is an experiment in using ChatGPT and Stable Diffusion to generate daily comics. 
 
-- We use Wasp to build the site and deploy it to Fly.io.
-- We use Replicate to generate images
-- We use Cloudflare R2 for image storage
+- We use [Wasp](http://wasp-lang.dev) to build the site and deploy it to Fly.io.
+- We use [Replicate](http://replicate.com) to generate images
+- We use [Cloudflare R2](https://www.cloudflare.com/en-gb/products/r2/) for image storage
 
 ### Running it locally
 
