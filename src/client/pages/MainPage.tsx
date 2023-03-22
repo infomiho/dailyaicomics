@@ -14,7 +14,13 @@ const MainPage = () => {
   const comicsInfo = useQuery<
     {},
     (ComicEntity & { _count: { votes: number }; images: ComicImage[] })[]
-  >(getComics);
+  >(
+    getComics,
+    {},
+    {
+      refetchInterval: 25 * 1000,
+    }
+  );
   const userVoteInfo = useQuery<{}, { comicId: string | null }>(
     getTodaysUserVote,
     {},

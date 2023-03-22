@@ -2,7 +2,7 @@ import { GetComics } from "@wasp/queries/types";
 import { Comic } from "@wasp/entities";
 
 export const getComics: GetComics<{}, Comic[]> = async (args, context) => {
-  return context.entities.Comic.findMany({
+  const comics = await context.entities.Comic.findMany({
     where: {
       createdAt: {
         gte: new Date(new Date().setHours(0, 0, 0, 0)),
@@ -15,4 +15,6 @@ export const getComics: GetComics<{}, Comic[]> = async (args, context) => {
       },
     },
   });
+  comics.sort((a, b) => b._count.votes - a._count.votes);
+  return comics;
 };

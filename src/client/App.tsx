@@ -6,6 +6,7 @@ import {
   Link,
   Container,
   Button,
+  Text,
 } from "@chakra-ui/react";
 
 import { signInUrl } from "@wasp/auth/helpers/Google";
@@ -23,7 +24,10 @@ export function App({ children }: { children: JSX.Element }) {
         <Container maxW="container.xl">
           <Flex justifyContent="space-between" alignItems="center" p={3} mt={8}>
             <Box width="33%">Archive</Box>
-            <Heading width="33%">Daily AI Comic</Heading>
+            <Box width="33%" textAlign="center">
+              <Heading>Daily AI Comic</Heading>
+              <Text>Login to vote. You can only give one vote.</Text>
+            </Box>
             <Flex width="33%" justifyContent="flex-end">
               {!user && (
                 <Button as="a" href={signInUrl} colorScheme="brand">
@@ -47,10 +51,14 @@ export function App({ children }: { children: JSX.Element }) {
           </Flex>
         </Container>
         {children}
-        <Box as="footer" textAlign="center" p={3}>
-          Made with{" "}
+        <Box as="footer" textAlign="center" p={6}>
+          Powered by{" "}
           <Link href="https://wasp-lang.dev" target="_blank">
             Wasp
+          </Link>
+          , ChatGPT and{" "}
+          <Link href="https://replicate.com/" target="_blank">
+            Replicate
           </Link>
         </Box>
       </Box>
