@@ -13,6 +13,13 @@ export const theme = extendTheme({
         lineHeight: "tall",
         bg: "brand.50",
       },
+      a: {
+        color: "brand.600",
+        _hover: {
+          textDecoration: "underline",
+          color: "brand.700",
+        },
+      },
     },
   },
   fonts: {

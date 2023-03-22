@@ -1,5 +1,5 @@
 import { Box, Button, VStack } from "@chakra-ui/react";
-import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
+import { AiOutlineArrowUp } from "react-icons/ai";
 
 export function ComicButtons({
   onVote,

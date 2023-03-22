@@ -7,7 +7,9 @@ import {
   Container,
   Button,
   Text,
+  Icon,
 } from "@chakra-ui/react";
+import { AiFillGithub } from "react-icons/ai";
 
 import { signInUrl } from "@wasp/auth/helpers/Google";
 
@@ -23,10 +25,10 @@ export function App({ children }: { children: JSX.Element }) {
       <Box>
         <Container maxW="container.xl">
           <Flex justifyContent="space-between" alignItems="center" p={3} mt={8}>
-            <Box width="33%">Archive</Box>
+            <Box width="33%"></Box>
             <Box width="33%" textAlign="center">
               <Heading>Daily AI Comic</Heading>
-              <Text>Login to vote. You can only give one vote.</Text>
+              <Text>All comics written and drawn by AI. Login to vote.</Text>
             </Box>
             <Flex width="33%" justifyContent="flex-end">
               {!user && (
@@ -51,14 +53,29 @@ export function App({ children }: { children: JSX.Element }) {
           </Flex>
         </Container>
         {children}
-        <Box as="footer" textAlign="center" p={6}>
-          Powered by{" "}
-          <Link href="https://wasp-lang.dev" target="_blank">
-            Wasp
-          </Link>
-          , ChatGPT and{" "}
-          <Link href="https://replicate.com/" target="_blank">
-            Replicate
+        <Box as="footer" p={6}>
+          <Box textAlign="center" fontSize="lg">
+            Powered by{" "}
+            <Link href="https://wasp-lang.dev" target="_blank">
+              Wasp
+            </Link>
+            ,{" "}
+            <Link href="https://openai.com" target="_blank">
+              ChatGPT
+            </Link>{" "}
+            and{" "}
+            <Link href="https://replicate.com/" target="_blank">
+              Replicate
+            </Link>
+          </Box>
+          <Link
+            href="https://github.com/infomiho/dailyaicomics"
+            target="_blank"
+          >
+            <Flex alignItems="center" justifyContent="center">
+              This project is open source
+              <Icon as={AiFillGithub} ml={1} />
+            </Flex>
           </Link>
         </Box>
       </Box>
