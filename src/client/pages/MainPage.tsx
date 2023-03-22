@@ -1,8 +1,9 @@
-import { Container, VStack } from "@chakra-ui/react";
+import { Container, VStack, Button, Box } from "@chakra-ui/react";
 
 import { Comic } from "../components/Comic";
 import { ComicLoader } from "../components/ComicLoader";
 import { useQuery } from "@wasp/queries";
+import { Link as RouterLink } from "react-router-dom";
 
 import getComics from "@wasp/queries/getComics";
 import getTodaysUserVote from "@wasp/queries/getTodaysUserVote";
@@ -37,12 +38,13 @@ const MainPage = () => {
         </VStack>
       )}
       {comicsInfo.data && (
-        <VStack gap={2} py={4}>
+        <VStack gap={6} py={4}>
           {comicsInfo.data.map((comic) => (
             <Comic
               key={comic.id}
               comic={comic}
               votedForId={userVoteInfo.data ? userVoteInfo.data.comicId : null}
+              isMainPage
             />
           ))}
         </VStack>

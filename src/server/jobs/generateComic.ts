@@ -1,5 +1,7 @@
 import { getComic } from "../comics/index.js";
 
+const comicsPerDay = 5;
+
 export async function generateComicFn(
   args: unknown,
   context: { entities: { ComicJob: any; Comic: any } }
@@ -31,9 +33,8 @@ export async function generateComicFn(
     throw e;
   });
 
-  // If there are already 3 comics for today, do nothing
-  if (comics.length >= 5) {
-    console.log("[generateComic] Already 3 comics for today");
+  if (comics.length >= comicsPerDay) {
+    console.log(`[generateComic] Already ${comicsPerDay} comics for today`);
     return;
   }
 
@@ -59,6 +60,7 @@ export async function generateComicFn(
         status: "completed",
         comics: {
           create: {
+            title: comic.title,
             prompt: comic.comicPrompt,
             imagePrefix: comic.imagePromptPrefix,
             images: {

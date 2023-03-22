@@ -7,18 +7,12 @@ const chatgptAPI = new ChatGPTAPI({
 });
 
 export async function getComic(id: string, topic?: string) {
-  const extraTopic = topic ? ` about "${topic}"` : "";
-
-  const comicPrompt = `You are responding with only JSON so your output can be parsed.
-
-Write a three piece comic${extraTopic} with a funny punch line. 
-For each part describe the scene visually so it can be drawn. Describe what the reader sees. Use only 5 words that are the most important. Each scene description should be self contained and not depend on the previous description.
-Provide the text accompanying the part. Don't prefix the text with anything.
-
-Respond with ONLY the JSON that describes the comic: [{ sceneDescription: "", text: "" }], don't respond with any extra text or explanations.`;
+  const comicPrompt = getComicPrompt(topic);
 
   const response = await chatgptAPI.sendMessage(comicPrompt);
-  let comicJSON: { sceneDescription: string; text: string }[] | undefined;
+  let comicJSON:
+    | { scenes: { sceneDescription: string; text: string }[]; title: string }
+    | undefined;
   try {
     comicJSON = JSON.parse(response.text);
   } catch (e) {
@@ -27,7 +21,7 @@ Respond with ONLY the JSON that describes the comic: [{ sceneDescription: "", te
     );
   }
 
-  console.log("What we'll be drawing");
+  console.log("[comic generator] What we'll be drawing");
   console.table(comicJSON);
 
   const imageStyle = getRandomImageStyle();
@@ -35,11 +29,11 @@ Respond with ONLY the JSON that describes the comic: [{ sceneDescription: "", te
   // For each part of the comic, get the image
   const images: { sceneDescription: string; text: string; image: string }[] =
     await Promise.all(
-      comicJSON!.map(async (part: any) => {
+      comicJSON!.scenes.map(async (part: any) => {
         const image = await waitForPredicationImage(
           `${part.sceneDescription}, ${imageStyle}`,
           (update) => {
-            console.log("Image update", update);
+            console.log("[comic generator] Image update", update);
           }
         );
         const text = part.text.replace(/\\n/g, "<br/>");
@@ -55,6 +49,7 @@ Respond with ONLY the JSON that describes the comic: [{ sceneDescription: "", te
   }
 
   return {
+    title: comicJSON!.title,
     images,
     imagePromptPrefix: imageStyle,
     comicPrompt,
@@ -72,8 +67,23 @@ function getRandomImageStyle(): string {
     "in style of Pendleton Ward, single panel, no text",
     "in style of Don Hertzfeldt, single panel, no text",
     "in style of watterson (calvin & hobbs, single panel, no text",
-    "ink, black and yellow ink, cartoon style, simple scene, 3 elements in the scene, mostly white background",
+    "ink, black and yellow ink, cartoon style, simple scene, mostly white background",
   ];
 
   return styles[Math.floor(Math.random() * styles.length)];
+}
+
+function getComicPrompt(topic?: string) {
+  const extraTopic = topic ? ` about "${topic}"` : "";
+  return `You are responding with only JSON so your output can be parsed.
+
+  Write a three piece comic${extraTopic} with a funny punch line.
+  
+  For each part describe the scene visually. Each description will given to a different artist that doesn't know about the other scenes (don't make references to other scenes). Use 15 words or less.
+  
+  Provide the text accompanying the part. Don't prefix the text with anything.
+
+  Provide a title for the comic. Don't prefix the title with anything.
+  
+  Respond with ONLY the JSON that describes the comic:{"scenes":  [{ sceneDescription: "" text:"" }], "title": ""}, don't respond with any extra text or explanations.`;
 }

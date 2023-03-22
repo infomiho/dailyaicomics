@@ -1,5 +1,5 @@
 import { Box, Button, VStack, Tooltip } from "@chakra-ui/react";
-import { AiTwotoneHeart } from "react-icons/ai";
+import { BiUpArrowAlt } from "react-icons/bi";
 
 export function ComicButtons({
   onVote,
@@ -21,7 +21,7 @@ export function ComicButtons({
       disabled={disabled}
       variant={isSelected ? "solid" : "outline"}
     >
-      <AiTwotoneHeart />
+      <BiUpArrowAlt />
     </Button>
   );
   return (

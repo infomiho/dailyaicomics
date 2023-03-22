@@ -31,6 +31,8 @@ app dailyaicomic {
     ("@fontsource/source-sans-pro", "4.5.11"),
     ("axios", "^0.27.2"),
     ("@aws-sdk/client-s3", "3.295.0"),
+    ("react-syntax-highlighter", "15.5.0"),
+    ("@types/react-syntax-highlighter", "15.5.6")
   ],
 }
 
@@ -39,8 +41,18 @@ page MainPage {
   component: import Main from "@client/pages/MainPage.tsx"
 }
 
+route RootRoute { path: "/:comicId", to: DetailsPage }
+page DetailsPage {
+  component: import Main from "@client/pages/DetailsPage.tsx"
+}
+
 query getComics {
   fn: import { getComics } from "@server/queries/comics.js",
+  entities: [Comic]
+}
+
+query getComic {
+  fn: import { getComic } from "@server/queries/comics.js",
   entities: [Comic]
 }
 
@@ -82,6 +94,7 @@ psl=}
 
 entity Comic {=psl
   id String @id @default(uuid())
+  title String @default("")
   prompt String
   imagePrefix String
   images ComicImage[]

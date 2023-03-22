@@ -1,5 +1,15 @@
 import { useMemo } from "react";
-import { Box, VStack, HStack, AspectRatio, Image } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+
+import {
+  Heading,
+  Box,
+  Button,
+  VStack,
+  HStack,
+  AspectRatio,
+  Image,
+} from "@chakra-ui/react";
 import { Comic as ComicEntity, ComicImage } from "@wasp/entities";
 import { ComicButtons } from "./ComicButtons";
 import useAuth from "@wasp/auth/useAuth";
@@ -8,9 +18,11 @@ import voteForComic from "@wasp/actions/voteForComic";
 export function Comic({
   comic,
   votedForId,
+  isMainPage = false,
 }: {
   comic: ComicEntity & { _count: { votes: number }; images: ComicImage[] };
   votedForId: string | null;
+  isMainPage?: boolean;
 }) {
   const { data: user } = useAuth();
   const sortedImages = useMemo(() => {
@@ -33,21 +45,43 @@ export function Comic({
             : ""
         }
       />
-      <HStack
+      <VStack
+        gap={2}
         p={3}
         borderWidth="1px"
         borderRadius="lg"
-        overflow="auto"
         bg="white"
         boxShadow="md"
-        gap={3}
-        maxW="80vw"
-        alignItems="flex-start"
+        position="relative"
       >
-        {sortedImages.map((image) => (
-          <ComicFrame key={image.id} image={image} />
-        ))}
-      </HStack>
+        <Heading size="md">
+          {comic.title || "Untitled"}{" "}
+          {isMainPage && (
+            <Button
+              as={RouterLink}
+              to={`/${comic.id}`}
+              borderRadius="full"
+              colorScheme="brand"
+              variant="outline"
+              size="xs"
+              _hover={{
+                textDecoration: "none",
+              }}
+              position="absolute"
+              right={4}
+              top={4}
+            >
+              Open details
+            </Button>
+          )}
+        </Heading>
+
+        <HStack overflow="auto" maxW="80vw" gap={3} alignItems="flex-start">
+          {sortedImages.map((image) => (
+            <ComicFrame key={image.id} image={image} />
+          ))}
+        </HStack>
+      </VStack>
     </HStack>
   );
 }
@@ -64,10 +98,11 @@ function ComicFrame({ image }: { image: ComicImage }) {
           position="absolute"
           top={2}
           left={2}
+          width="90%"
           borderRadius="sm"
           zIndex={2}
           boxShadow="md"
-          fontSize="lg"
+          fontSize={["sm", "sm", "md", "md", "lg"]}
         >
           {image.text}
         </Box>
