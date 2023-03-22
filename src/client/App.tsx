@@ -25,12 +25,12 @@ export function App({ children }: { children: JSX.Element }) {
       <Box>
         <Container maxW="container.xl">
           <Flex justifyContent="space-between" alignItems="center" p={3} mt={8}>
-            <Box width="33%"></Box>
-            <Box width="33%" textAlign="center">
-              <Heading>Daily AI Comic</Heading>
+            <Box minWidth="33%"></Box>
+            <Box minWidth="33%" textAlign="center">
+              <Heading>Daily AI Comics</Heading>
               <Text>All comics written and drawn by AI. Login to vote.</Text>
             </Box>
-            <Flex width="33%" justifyContent="flex-end">
+            <Flex minWidth="33%" justifyContent="flex-end">
               {!user && (
                 <Button as="a" href={signInUrl} colorScheme="brand">
                   Login
