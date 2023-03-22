@@ -3,6 +3,17 @@ app dailyaicomic {
     version: "^0.9.0"
   },
   title: "Daily AI Comics",
+  auth: {
+    userEntity: User,
+    externalAuthEntity: SocialLogin,
+    methods: {
+      google: {
+        getUserFieldsFn: import { getUserFields } from "@server/auth/google.js",
+        configFn: import { getConfig } from "@server/auth/google.js",
+      },
+    },
+    onAuthFailedRedirectTo: "/",
+  },
   db: {
     system: PostgreSQL
   },
@@ -33,6 +44,35 @@ query getComics {
   entities: [Comic]
 }
 
+action voteForComic {
+  fn: import { vote } from "@server/queries/vote.js",
+  entities: [Comic, Vote],
+  auth: true
+}
+
+query getTodaysUserVote {
+  fn: import { getUserVote } from "@server/queries/vote.js",
+  entities: [Vote],
+  auth: true
+}
+
+entity User {=psl
+  id Int @id @default(autoincrement())
+  username String
+  password String
+  externalAuthAssociations SocialLogin[]
+  votes Vote[]
+psl=}
+
+entity SocialLogin {=psl
+  id String @id @default(uuid())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  provider String
+  providerId String
+  createdAt DateTime @default(now())
+psl=}
+
 entity ComicJob {=psl
   id String @id @default(uuid())
   status String
@@ -45,6 +85,7 @@ entity Comic {=psl
   prompt String
   imagePrefix String
   images ComicImage[]
+  votes Vote[]
   comicJobId String
   comicJob ComicJob @relation(fields: [comicJobId], references: [id])
   createdAt DateTime @default(now())
@@ -61,6 +102,15 @@ entity ComicImage {=psl
   imagePrompt String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+psl=}
+
+entity Vote {=psl
+  id String @id @default(uuid())
+  comicId String
+  comic Comic @relation(fields: [comicId], references: [id])
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 psl=}
 
 job kickoffGeneration {

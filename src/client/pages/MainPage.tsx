@@ -1,23 +1,43 @@
-import { Container, VStack, Spinner } from "@chakra-ui/react";
+import { Container, VStack } from "@chakra-ui/react";
 
 import { Comic } from "../components/Comic";
+import { ComicLoader } from "../components/ComicLoader";
 import { useQuery } from "@wasp/queries";
 
 import getComics from "@wasp/queries/getComics";
+import getTodaysUserVote from "@wasp/queries/getTodaysUserVote";
 import { Comic as ComicEntity, ComicImage } from "@wasp/entities";
+import useAuth from "@wasp/auth/useAuth";
 
 const MainPage = () => {
-  const comicsInfo = useQuery<{}, (ComicEntity & { images: ComicImage[] })[]>(
-    getComics
+  const { data: user } = useAuth();
+  const comicsInfo = useQuery<
+    {},
+    (ComicEntity & { _count: { votes: number }; images: ComicImage[] })[]
+  >(getComics);
+  const userVoteInfo = useQuery<{}, { comicId: string | null }>(
+    getTodaysUserVote,
+    {},
+    { enabled: !!user }
   );
 
   return (
     <Container maxW="container.xl" py={4}>
-      {comicsInfo.isInitialLoading && <Spinner />}
+      {comicsInfo.isLoading && (
+        <VStack gap={2} py={4}>
+          <ComicLoader />
+          <ComicLoader />
+          <ComicLoader />
+        </VStack>
+      )}
       {comicsInfo.data && (
         <VStack gap={2} py={4}>
           {comicsInfo.data.map((comic) => (
-            <Comic key={comic.id} comic={comic} />
+            <Comic
+              key={comic.id}
+              comic={comic}
+              votedForId={userVoteInfo.data ? userVoteInfo.data.comicId : null}
+            />
           ))}
         </VStack>
       )}

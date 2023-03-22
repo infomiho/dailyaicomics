@@ -1,20 +1,18 @@
 import { useMemo } from "react";
-import {
-  Box,
-  Button,
-  VStack,
-  HStack,
-  AspectRatio,
-  Image,
-} from "@chakra-ui/react";
-import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
+import { Box, VStack, HStack, AspectRatio, Image } from "@chakra-ui/react";
 import { Comic as ComicEntity, ComicImage } from "@wasp/entities";
+import { ComicButtons } from "./ComicButtons";
+import useAuth from "@wasp/auth/useAuth";
+import voteForComic from "@wasp/actions/voteForComic";
 
 export function Comic({
   comic,
+  votedForId,
 }: {
-  comic: ComicEntity & { images: ComicImage[] };
+  comic: ComicEntity & { _count: { votes: number }; images: ComicImage[] };
+  votedForId: string | null;
 }) {
+  const { data: user } = useAuth();
   const sortedImages = useMemo(() => {
     const images = [...comic.images];
     images.sort((a, b) => a.imageIndex - b.imageIndex);
@@ -22,13 +20,18 @@ export function Comic({
   }, [comic.images.map((i) => i.id)]);
   return (
     <HStack alignItems="flex-start" gap={3}>
-      <ComicButtons />
+      <ComicButtons
+        onVote={() => voteForComic({ comicId: comic.id })}
+        votes={comic._count.votes}
+        isSelected={comic.id === votedForId}
+        disabled={!user || votedForId !== null}
+      />
       <HStack
         p={3}
         borderWidth="1px"
         borderRadius="lg"
         overflow="auto"
-        bg="brand.50"
+        bg="white"
         boxShadow="md"
         gap={3}
         maxW="80vw"
@@ -57,6 +60,7 @@ function ComicFrame({ image }: { image: ComicImage }) {
           borderRadius="sm"
           zIndex={2}
           boxShadow="md"
+          fontSize="lg"
         >
           {image.text}
         </Box>
@@ -64,23 +68,9 @@ function ComicFrame({ image }: { image: ComicImage }) {
           <Image src={image.image} objectFit="cover" objectPosition="center" />
         </AspectRatio>
       </Box>
-      <Box fontSize="sm" textAlign="center">
+      <Box fontSize="sm" textAlign="center" lineHeight={1.2} color="gray.500">
         {image.imagePrompt}
       </Box>
-    </VStack>
-  );
-}
-
-function ComicButtons() {
-  return (
-    <VStack>
-      <Button colorScheme="brand">
-        <AiOutlineArrowUp />
-      </Button>
-      <Box fontWeight={700}>123</Box>
-      <Button colorScheme="brand">
-        <AiOutlineArrowDown />
-      </Button>
     </VStack>
   );
 }

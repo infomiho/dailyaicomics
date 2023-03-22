@@ -10,6 +10,9 @@ export const getComics: GetComics<{}, Comic[]> = async (args, context) => {
     },
     include: {
       images: true,
+      _count: {
+        select: { votes: true },
+      },
     },
   });
 };
