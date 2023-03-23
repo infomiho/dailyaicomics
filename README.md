@@ -28,13 +28,15 @@ and then:
 wasp start
 ```
 
-### Deploying to FLy.io
+### Deploying to Fly.io
 
 Make sure you have the Fly CLI installed, then run:
 
 ```bash
 wasp deploy fly launch <name> <region> # first time
 ```
+
+where `<name>` is some unique app name and `<region>` is one of [Fly.io regions](https://fly.io/docs/reference/regions/).
 
 ```bash
 wasp deploy fly deploy # subsequent times
