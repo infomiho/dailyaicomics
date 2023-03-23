@@ -8,7 +8,7 @@ Hey 👋 Thanks for checking out Daily AI Comics source. This is an experiment i
 
 ### Running it locally
 
-Copy `.env.example` to `.env.server` and fill in the values.
+Copy `env.example` to `.env.server` and fill in the values.
 
 You'll need a PostgreSQL running locally. You can use Docker to run one:
 
