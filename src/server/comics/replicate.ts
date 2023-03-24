@@ -27,7 +27,7 @@ function getPredication(prompt: string): Promise<any> {
       input: {
         prompt,
         image_dimensions: "512x512",
-        num_inference_steps: 75,
+        num_inference_steps: 400,
       },
       version: stableDiffusionModel2,
     },
