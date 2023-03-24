@@ -1,4 +1,5 @@
 import { ChatGPTAPI } from "chatgpt";
+import { getComicPrompt, imageStyles } from "./prompts.js";
 import { uploadImageFromURL } from "./r2.js";
 import { waitForPredicationImage } from "./replicate.js";
 
@@ -58,32 +59,7 @@ export async function getComic(id: string, topic?: string) {
 }
 
 function getRandomImageStyle(): string {
-  const styles = [
-    "in style of quentin blake, single panel, no text",
-    "in style of Craig Mccracken, single panel, no text",
-    "in style of Art Spiegelman, single panel, no text",
-    "in style of Marjane Satrapi, single panel, no text",
-    `in style of Bryan Lee O'Malley, single panel, no text`,
-    "in style of Pendleton Ward, single panel, no text",
-    "in style of Don Hertzfeldt, single panel, no text",
-    "in style of watterson (calvin & hobbs, single panel, no text",
-    "ink, black and yellow ink, cartoon style, simple scene, mostly white background",
-  ];
+  const styles = imageStyles;
 
   return styles[Math.floor(Math.random() * styles.length)];
-}
-
-function getComicPrompt(topic?: string) {
-  const extraTopic = topic ? ` about "${topic}"` : "";
-  return `You are responding with only JSON so your output can be parsed.
-
-  Write a three piece comic${extraTopic} with a funny punch line.
-  
-  For each part describe the scene visually. Each description will given to a different artist that doesn't know about the other scenes (don't make references to other scenes). Use 15 words or less.
-  
-  Provide the text accompanying the part. Don't prefix the text with anything.
-
-  Provide a title for the comic. Don't prefix the title with anything.
-  
-  Respond with ONLY the JSON that describes the comic:{"scenes":  [{ sceneDescription: "" text:"" }], "title": ""}, don't respond with any extra text or explanations.`;
 }
